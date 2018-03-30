@@ -1,0 +1,4 @@
+---
+mariadb_package: mariadb-server
+mariadb_service_name: mariadb
+python_mysqldb_package: MySQL-python

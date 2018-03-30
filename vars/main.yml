@@ -1,0 +1,7 @@
+---
+root_password: ch4ng3m3
+
+# list of users to create:
+# every list item should be of the form:
+# {name: "username", password: "encrypted password"}
+users: []

@@ -1,0 +1,10 @@
+---
+- include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_os_family }}.yml"
+    - "default.yml"
+
+- name: restart mariadb-server
+  service:
+    name: "{{ mariadb_service_name }}"
+    state: restarted
