@@ -26,7 +26,7 @@
         root_password: "password",
         users: [
           {name: "application", password: "secretpassword"},
-          {name: "blog", password: "secretpassword"},
+          {name: "blog", password: "secretpassword", host: "some_host"},
           {name: "admin", password: "adminpassword", no_db: true}
         ]
       }
@@ -41,6 +41,14 @@
       command: "mysql -u application -psecretpassword -e 'use blog; show tables;'"
       register: show_tables_blog
       failed_when: show_tables_blog.rc == 0 or "Access denied" not in show_tables_blog.stderr or "to database 'blog'" not in show_tables_blog.stderr
+    - name: Default host is localhost
+      command: "mysql -e \"select host from mysql.user where user = 'application'\""
+      register: default_host
+      failed_when: default_host.rc != 0 or "localhost" not in default_host.stdout
+    - name: Can override host
+      command: "mysql -e \"select host from mysql.user where user = 'blog'\""
+      register: override_host
+      failed_when: override_host.rc != 0 or "some_host" not in override_host.stdout
     - name: No database were created with name admin
       command: "mysql -e 'use admin;'"
       register: use_admin
