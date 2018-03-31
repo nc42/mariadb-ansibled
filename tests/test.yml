@@ -25,11 +25,23 @@
         role: mariadb, 
         root_password: "password",
         users: [
-          {name: "application", password: "secretpassword"}
+          {name: "application", password: "secretpassword"},
+          {name: "blog", password: "secretpassword"},
+          {name: "admin", password: "adminpassword", no_db: true}
         ]
       }
   tasks:
-    - name: Can connect as created user
-      command: "mysql -u application -psecretpassword -e 'show databases;'"
     - name: Can connect as root
       command: "mysql -e 'show databases;'"
+    - name: Can connect as created user
+      command: "mysql -u application -psecretpassword -e 'show databases;'"
+    - name: Can use user database
+      command: "mysql -u application -psecretpassword -e 'use application; show tables;'"
+    - name: Cannot use another user database
+      command: "mysql -u application -psecretpassword -e 'use blog; show tables;'"
+      register: show_tables_blog
+      failed_when: show_tables_blog.rc == 0 or "Access denied" not in show_tables_blog.stderr or "to database 'blog'" not in show_tables_blog.stderr
+    - name: No database were created with name admin
+      command: "mysql -e 'use admin;'"
+      register: use_admin
+      failed_when: use_admin.rc == 0 or "Unknown database 'admin'" not in use_admin.stderr

@@ -31,8 +31,24 @@
     src: my.cnf
     dest: ~/.my.cnf
 
-- name: Create users
+- name: Create databases
+  mysql_db:
+    name: "{{ item.name }}"
+    state: present
+  with_items: "{{ users }}"
+  when: item.no_db is undefined or item.no_db == false
+
+- name: Create users with grant
+  mysql_user:
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    priv: "{{ item.name }}.*:ALL"
+  with_items: "{{ users }}"
+  when: item.no_db is undefined or item.no_db == false
+
+- name: Create users without grant
   mysql_user:
     name: "{{ item.name }}"
     password: "{{ item.password }}"
   with_items: "{{ users }}"
+  when: item.no_db is defined and item.no_db == true
