@@ -30,7 +30,7 @@ Example Playbook
               role: mariadb, 
               root_password: "password",
               users: [
-                {name: "application", password: "secretpassword"}
+                {name: "application", password: "secretpassword", no_db: true, host: "%"}
               ]
             }
 

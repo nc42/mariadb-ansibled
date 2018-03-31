@@ -43,6 +43,7 @@
     name: "{{ item.name }}"
     password: "{{ item.password }}"
     priv: "{{ item.name }}.*:ALL"
+    host: "{{ item.host | default('localhost', true) }}"
   with_items: "{{ users }}"
   when: item.no_db is undefined or item.no_db == false
 
@@ -50,5 +51,6 @@
   mysql_user:
     name: "{{ item.name }}"
     password: "{{ item.password }}"
+    host: "{{ item.host | default('localhost', true) }}"
   with_items: "{{ users }}"
   when: item.no_db is defined and item.no_db == true
