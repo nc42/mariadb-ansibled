@@ -34,6 +34,7 @@
 - name: Create databases
   mysql_db:
     name: "{{ item.name }}"
+    encoding: "utf8"
     state: present
   with_items: "{{ users }}"
   when: item.no_db is undefined or item.no_db == false
